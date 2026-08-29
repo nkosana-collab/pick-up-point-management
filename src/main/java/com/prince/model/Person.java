@@ -1,19 +1,19 @@
 package com.prince.model;
 
 public abstract class Person {
-    private String name;
-    private String inNumber;
+    private final String NAME;
+    private final String ID;
 
     public Person(String name, String idNumber) {
-        this.name = name;
-        this.inNumber = idNumber;
+        this.NAME = name;
+        this.ID = idNumber;
     }
 
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public String getInNumber() {
-        return inNumber;
+        return ID;
     }
 }
