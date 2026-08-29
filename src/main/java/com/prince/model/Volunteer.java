@@ -11,7 +11,7 @@ public class Volunteer extends Person{
 
     public Volunteer(String name, String idNumber) {
         super(name, idNumber);
-        this.DATABASE = new DataBaseConnector();
+        this.DATABASE = new DataBaseConnector("jdbc:sqlite:pickUpPoints.db");
     }
 
     public boolean addPickUpPoint(String name, String address) {
@@ -28,7 +28,8 @@ public class Volunteer extends Person{
 
         PickUpPoint pickUpPoint = DATABASE.getPickUpPoint(pickUpPointName);
         if(pickUpPoint.addUsage(crates)) {
-            DATABASE.updatePickUpPoint(pickUpPoint);
+            DATABASE.updatePickUpPoint(pickUpPointName, crates);
+            return true;
         }
         return false;
     }

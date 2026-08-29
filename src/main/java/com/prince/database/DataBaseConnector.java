@@ -8,14 +8,28 @@ import java.util.ArrayList;
 public class DataBaseConnector {
 
     private final String URL;
+    private final Connection CONN;
 
-    public DataBaseConnector() {
-        this.URL = "jdbc:sqlite:pickUpPoints.db";
+    public DataBaseConnector(String url) {
+        this.URL = url;
+        try {
+            this.CONN = getConnection(URL);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         initializeSchema();
     }
 
-    private Connection getConnection() throws SQLException {
-        Connection conn = DriverManager.getConnection(URL);
+    public void killConnection() {
+        try {
+            CONN.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Connection getConnection(String url) throws SQLException {
+        Connection conn = DriverManager.getConnection(url);
         try (Statement stmt = conn.createStatement()) {
             stmt.execute("PRAGMA foreign_keys = ON;");
         }
@@ -29,8 +43,7 @@ public class DataBaseConnector {
                 + "usage INTEGER NOT NULL"
                 + ");";
 
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement()) {
+        try (Statement stmt = CONN.createStatement()) {
             stmt.executeUpdate(createTasksTable);
         } catch (SQLException e) {
             System.err.println("Database initialization error: " + e.getMessage());
@@ -44,10 +57,9 @@ public class DataBaseConnector {
 
         String addStore = "INSERT INTO pickUpPoints (name, address, usage) VALUES (?, ?, ?)";
 
-        try(Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(addStore)){
+        try(PreparedStatement stmt = CONN.prepareStatement(addStore)){
 
-            conn.setAutoCommit(false);
+            CONN.setAutoCommit(false);
 
             stmt.setString(1, name);
             stmt.setString(2, address);
@@ -64,10 +76,9 @@ public class DataBaseConnector {
 
         String getName = "SELECT * FROM pickUpPoints WHERE name = (?)";
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(getName);){
+        try (PreparedStatement stmt = CONN.prepareStatement(getName);){
 
-            conn.setAutoCommit(false);
+            CONN.setAutoCommit(false);
             stmt.setString(1,name);
             ResultSet rs = stmt.executeQuery();
 
@@ -83,17 +94,16 @@ public class DataBaseConnector {
         return null;
     }
 
-    public void updatePickUpPoint(PickUpPoint store) {
+    public void updatePickUpPoint(String storeName, int crates) {
 
-        String name = store.getNAME();
-        int creates = store.getCurrentUsage();
+        String name = storeName;
+        int creates = crates;
 
         String updateUsage = "UPDATE pickUpPoints SET usage = (?) WHERE name = (?)";
 
-        try (Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(updateUsage);) {
+        try (PreparedStatement stmt = CONN.prepareStatement(updateUsage);) {
 
-            conn.setAutoCommit(false);
+            CONN.setAutoCommit(false);
 
             stmt.setInt(1, creates);
             stmt.setString(2, name);
@@ -110,9 +120,9 @@ public class DataBaseConnector {
         String getStores = "SELECT * FROM pickUpPoints";
         ArrayList<PickUpPoint> stores = new ArrayList<>();
 
-        try(Connection conn = getConnection()) {
+        try {
 
-            ResultSet rs = conn.createStatement().executeQuery(getStores);
+            ResultSet rs = CONN.createStatement().executeQuery(getStores);
 
             while (rs.next()) {
                 String name = rs.getString("name");

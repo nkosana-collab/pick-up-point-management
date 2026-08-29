@@ -5,10 +5,6 @@ import com.prince.service.Processor;
 
 import java.util.Scanner;
 
-/**
- * Hello world!
- *
- */
 public class UserInterface
 {
     private static Scanner scanner;
