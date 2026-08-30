@@ -3,6 +3,8 @@ package com.prince.unittesting;
 import com.prince.model.PickUpPoint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,6 +33,7 @@ public class PickUpPointTest {
         assertEquals(100, store.getCurrentUsage());
     }
 
+
     /**
      * Given that I have a valid PickUpPoint Object with initial with 1
      * When I increase its capacity by 100-
@@ -49,6 +52,26 @@ public class PickUpPointTest {
         assertEquals(1,store.getCurrentUsage());
 
     }
+
+
+    /**
+     * Given that I have a valid name and address
+     * When I try to instantiate PickUpPoint with other
+     * multiple values within the valid range other than those around
+     * the boundary--
+     * Then I should be allowed to do so.
+     */
+    @ParameterizedTest(name = "Store: {index} | Usage: {arguments}")
+    @ValueSource(ints = {30,50,78,42})
+    void multipleValidUsagesShouldInstantiateSuccessfully(int param) {
+
+        // Given && When:
+        PickUpPoint store = new PickUpPoint("MockName", "MockAddress", param);
+
+        // Then:
+        assertEquals(param, store.getCurrentUsage());
+    }
+
 
     /**
      * Instantiating a PickUpPoint object with a less than zero usage
