@@ -4,6 +4,7 @@ import com.prince.model.PickUpPoint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,6 +71,24 @@ public class PickUpPointTest {
 
         // Then:
         assertEquals(param, store.getCurrentUsage());
+    }
+
+
+    /**
+     * Given That I have a valid PickUpPoint object with > 0 usage
+     * When I attempt to add an amount that adds up to > 100--
+     * Then I must not be allowed to do so.
+     */
+    @ParameterizedTest
+    @CsvSource({"Nathi-Station,Soweto,27,79", "Prince-Station,Witbank,10,95","Nathi-Station,Soweto,47,60"})
+    void  addingValuesAmountingToGreaterThanHundredFails(String param1, String param2, int param3, int param4) {
+
+        // Given:
+        PickUpPoint store = new PickUpPoint(param1,param2,param3);
+        // When:
+        boolean result = store.addUsage(param4);
+        // Then:
+        assertFalse(result);
     }
 
 
