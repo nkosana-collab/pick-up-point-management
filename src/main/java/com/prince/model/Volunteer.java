@@ -13,7 +13,10 @@ public class Volunteer extends Person{
         super(name, idNumber);
         this.DATABASE = new DataBaseConnector("jdbc:sqlite:pickUpPoints.db");
     }
-
+    public Volunteer(String name, String idNumber, String url) {
+        super(name, idNumber);
+        this.DATABASE = new DataBaseConnector(url);
+    }
 
     public boolean addPickUpPoint(String name, String address) {
 
