@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * A valid DataBaseConnector should act as a reliable mediator between
  * the database and whoever authorized to interact with it.
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DataBaseConnectorTest {
 
@@ -44,6 +45,7 @@ public class DataBaseConnectorTest {
      * Then the database should store the added PickUpPoint.
      */
     @Test
+    @Order(2)
     void databaseStorePickUpPointSuccessfully() {
 
         // Give:
@@ -66,6 +68,7 @@ public class DataBaseConnectorTest {
      * Then I should be able to update the usage of that particular PickUpPoint.
      */
     @Test
+    @Order(3)
     void dataBaseShouldUpdateUsageSuccessfully() {
 
         // Given:
@@ -88,6 +91,7 @@ public class DataBaseConnectorTest {
      * Then the database should store all the PickUpPoints added.
      */
     @Test
+    @Order(1)
     void databaseStoresMultiplePickUpPointsSuccessfully() {
 
         // Give && When:
